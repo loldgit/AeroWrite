@@ -25,12 +25,13 @@ __version__= "$Revision: 0.0 $"
 __credit__ = " "
 
 """TODOLIST :
-print error in .glo files
+print debug error for .glo files
 implement SUB voir comment ameliore le truc grace à un buffer
 est ce que ca vaut le coup ?
-make  aur package
 revoir les static var ce dessus
 
+le ; de delay
+revoir les nom de fonctions
 """
 
 ##### MY EXECPTION #####
@@ -65,17 +66,17 @@ class AeroCheck(object):
   CMIN = 0
 
   @classmethod
-  def testUint16(cls, ms_sec):
+  def testUint16(cls, ct_sec):
     try:
-      if (ms_sec < cls.TMIN) | (ms_sec  > cls.TMAX):
-        raise UInt16Error("in delay -> {} : is not an unsigned int 16".format(str(ms_sec)))
+      if (ct_sec < cls.TMIN) | (ct_sec  > cls.TMAX):
+        raise UInt16Error("in delay -> {} : is not an unsigned int 16".format(str(ct_sec)))
     except UInt16Error as e:
       print("UInt16Error : ", e)
 
 
   @classmethod
   def testLoop(cls, nb_loop):
-    """ test if Galues are betwen 1 and 255 """
+    """ test if Values are betwen 1 and 255 """
     try:
       if (nb_loop < (cls.CMIN + 1)) | (nb_loop > cls.CMAX):
         raise UCharError("in loop -> {} : is not an unsigned char".format(str(nb_loop)))
@@ -119,8 +120,8 @@ class PropFile(object):
       self.f.write("," + str(i))
     self.__write_space()
 
-  def __write_ms_sec(self, ms_sec):
-      self.f.write("," + str(ms_sec))
+  def __write_ct_sec(self, ct_sec):
+      self.f.write("," + str(ct_sec))
       self.__write_space()
 
   #---(END OF PRIVATE FUNCTIONS)
@@ -151,7 +152,7 @@ class PropFile(object):
     """For use R function"""
     lcol = (R, 0, 0) 
     AeroCheck.testUchar(*lcol)
-    self.f.write("R")
+    self.f.write("C")
     self.__write_colors(*lcol)
     self.cmt(cmt)
 
@@ -163,7 +164,7 @@ class PropFile(object):
     """For use G function"""
     lcol = (0, G, 0) 
     AeroCheck.testUchar(*lcol)
-    self.f.write("G")
+    self.f.write("C")
     self.__write_colors(*lcol)
     self.cmt(cmt)
 
@@ -174,32 +175,32 @@ class PropFile(object):
     """For use B function"""
     lcol = (0, 0, B) 
     AeroCheck.testUchar(*lcol)
-    self.f.write("B")
+    self.f.write("C")
     self.__write_colors(*lcol)
     self.cmt(cmt)
 
   #---------------------------
   #   D CLASICAL FUNCTION     
   #---------------------------
-  def d(self, ms_sec, cmt=""):
+  def d(self, ct_sec, cmt=""):
     """For use D function"""
-    AeroCheck.testUint16(ms_sec)
+    AeroCheck.testUint16(ct_sec)
     self.f.write("D")
-    self.f.write("," + str(ms_sec))
+    self.f.write("," + str(ct_sec))
     self.cmt(cmt)
     
 
   #---------------------------
   #   RAMP CLASICAL FUNCTION 
   #---------------------------
-  def ramp(self, R, G, B, ms_sec, cmt=""):
+  def ramp(self, R, G, B, ct_sec, cmt=""):
     """For use RAMP function"""
     lcol = (R, G, B) 
     AeroCheck.testUchar(*lcol)
-    AeroCheck.testUint16(ms_sec)
+    AeroCheck.testUint16(ct_sec)
     self.f.write("RAMP")
     self.__write_colors(*lcol)
-    self.__write_ms_sec(ms_sec)
+    self.__write_ct_sec(ct_sec)
     self.cmt(cmt)
     
 
