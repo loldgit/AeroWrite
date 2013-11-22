@@ -8,9 +8,17 @@ It's very useful to generate glo file.
 
 Requirement:
 ============
-python3
+python3 
 aerotech prob
 multi platform but at the moment only tested with linux
+
+Look out ! it seems some distrib  yet use python2 by default
+if this is the case
+make sure you have python installed
+and use python3 instead of python
+you can verify with :
+$ python --version 
+$ python3 --version
 
 install
 =======
