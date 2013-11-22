@@ -18,7 +18,7 @@ install
 you can do :
 $ git clone https://github.com/LaurentBa/AeroWrite.git
 $ cd AeroWrite
-$ sudo python install setup.py 
+$ sudo python setup.py install
 
 and test the example below :
 
