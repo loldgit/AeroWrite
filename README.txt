@@ -16,7 +16,7 @@ install
 =======
 
 you can do :
-$ git clonehttps://github.com/LaurentBa/AeroWrite.git
+$ git clone https://github.com/LaurentBa/AeroWrite.git
 $ cd AeroWrite
 $ sudo python install setup.py 
 
