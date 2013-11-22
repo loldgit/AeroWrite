@@ -1,34 +1,3 @@
-
-=========
-AeroWrite
-=========
-
-this is part software of AeroPack (set of tools for the aerotech juggling probs)
-It's very useful to generate glo file.
-
-Requirement:
-============
-python3
-aerotech prob
-multi platform but at the moment only tested with linux
-
-install
-=======
-
-you can do :
-$ git clonehttps://github.com/LaurentBa/AeroWrite.git
-$ cd AeroWrite
-$ sudo python install setup.py 
-
-and test the example below :
-
-$ cd docs/exemple
-$ python exemple.py
-
-
-exemple
-=======
-
 #!/usr/bin/python
 
 from aerowrite import PropFile, Color
@@ -99,8 +68,10 @@ for i in range(8):
 
 # Let's start balls prog
 for i in range(7):
-    print(i)
     ball[i].d(3000+300*3+200, "wait the end of club")
     ball[i].loop(4, myloop, i)
     
     ball[i].end()
+
+
+

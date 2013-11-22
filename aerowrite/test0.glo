@@ -1,0 +1,11 @@
+;hello world
+C,100,100,0 ;test 1
+C,100,100,0 ;test 2
+C,256,0,0 ;test 1
+C,0,256,0 ;test 1
+C,0,0,256 ;test 1
+D,-256 ;test 1
+
+
+RAMP,256,0,0 ,100 ;test 1
+RAMP,256,0,0 ,100 ;test 2

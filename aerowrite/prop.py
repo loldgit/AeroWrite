@@ -28,16 +28,12 @@ __credit__ = " "
 print debug error for .glo files
 implement SUB voir comment ameliore le truc grace à un buffer
 est ce que ca vaut le coup ?
-revoir les static var ce dessus
-
-le ; de delay
-revoir les nom de fonctions
 """
 
-##### MY EXECPTION #####
+##### EXECPTION #####
 
 class UCharError(Exception):
-  """  """
+  """ exception handling char """
   def __init__(self, value):
     self.value = value
   def __str__(self):
@@ -45,13 +41,13 @@ class UCharError(Exception):
 
 
 class UInt16Error(Exception):
-  """  """
+  """ exception handling uint16 """
   def __init__(self, value):
     self.value = value
   def __str__(self):
     return repr(self.value)
 
-#---(END OF MY EXCEPTION)
+#---(END OF EXCEPTION)
 
 
 #############################
@@ -65,6 +61,7 @@ class AeroCheck(object):
   CMAX = 255
   CMIN = 0
 
+  #ct_sec (hundredth seconds)
   @classmethod
   def testUint16(cls, ct_sec):
     try:
@@ -96,17 +93,66 @@ class AeroCheck(object):
 
 
 #############################
+# CLASS COLOR               # 
+#############################
+class Color(object):
+    """
+        class Color
+    """
+    ##### PRIVATE FUNCTIONS #####
+    def __init__(self, R=0, G=0, B=0):
+        lcol = (R, G, B)
+        AeroCheck.testUchar(*lcol)
+        self.__R = R
+        self.__G = G
+        self.__B = B
+    #---(END OF PRIVATE FUNCTIONS) 
+
+    def get_R(self):
+        return self.__R
+
+    def get_G(self):
+        return self.__G
+
+    def get_B(self):
+        return self.__B
+
+    def set_R(self, R):
+        lcol = (R, 0, 0)
+        AeroCheck.testUchar(*lcol)
+        self.__R = R
+
+    def set_G(self, G):
+        lcol = (0, G, 0)
+        AeroCheck.testUchar(*lcol)
+        self.__G = G
+
+    def set_B(self,B):
+        lcol = (0, 0, B)
+        AeroCheck.testUchar(*lcol)
+        self.__B = B
+
+    def set_RGB(self, R, G, B):
+        lcol = (R, G, B)
+        AeroCheck.testUchar(*lcol)
+        self.__R = R
+        self.__G = G
+        self.__B = B
+
+#############################
 # CLASS PROPFILE            # 
 #############################
 class PropFile(object):
-  """ class qui permet de generer des fichiers .glow """
+  """ class to generate files .glow for props """
 
   ##### PRIVATE FUNCTIONS #####
   def __init__(self, glo_file):
     try:
-      self.f = open(str(glo_file), 'w', encoding="utf-8")
+      # newline option is for dos file it's not mandatory for linux and mac  
+      self.f = open(str(glo_file), 'w', encoding="utf-8", newline='\r\n')
     except IOError: 
       print("can't open file : ", filename)
+
     self.__buff_sub = ""
 
   def __del__(self):
@@ -120,6 +166,7 @@ class PropFile(object):
       self.f.write("," + str(i))
     self.__write_space()
 
+  # ...ct_sec (hundredth seconds)
   def __write_ct_sec(self, ct_sec):
       self.f.write("," + str(ct_sec))
       self.__write_space()
@@ -134,19 +181,34 @@ class PropFile(object):
     self.f.write(";" + str(cmt) + "\n")
 
 
+
+
+
+#reprendre ici
   #---------------------------
-  #   C CLASICAL FUNCTION    
+  #   cc CLASICAL FUNCTION    
   #---------------------------
-  def C(self, R, G, B, cmt=""):
+  def cc(self, cls_color, cmt=""):
+    """For use C function"""
+    lcol = (cls_color.get_R(), cls_color.get_G(), cls_color.get_B()) 
+    AeroCheck.testUchar(*lcol)
+    self.f.write("C")
+    self.__write_colors(*lcol)
+    self.cmt(cmt)
+
+  #---------------------------
+  #   c CLASICAL FUNCTION    
+  #---------------------------
+  def c(self, R, G, B, cmt=""):
     """For use C function"""
     lcol = (R, G, B) 
     AeroCheck.testUchar(*lcol)
     self.f.write("C")
-    self.__write_colors(R, G, B)
+    self.__write_colors(*lcol)
     self.cmt(cmt)
 
   #---------------------------
-  #   R CLASICAL FUNCTION     
+  #   r CLASICAL FUNCTION     
   #---------------------------
   def r(self, R, cmt=""):
     """For use R function"""
@@ -186,7 +248,7 @@ class PropFile(object):
     """For use D function"""
     AeroCheck.testUint16(ct_sec)
     self.f.write("D")
-    self.f.write("," + str(ct_sec))
+    self.__write_ct_sec(ct_sec)
     self.cmt(cmt)
     
 
@@ -202,7 +264,20 @@ class PropFile(object):
     self.__write_colors(*lcol)
     self.__write_ct_sec(ct_sec)
     self.cmt(cmt)
-    
+
+  #---------------------------
+  #   RAMP WITH CLASS COLOR ARGUMENT FUNCTION 
+  #---------------------------
+  def cramp(self, cls_color, ct_sec, cmt=""):
+    """For use RAMP function"""
+    lcol = (cls_color.get_R(), cls_color.get_G(), cls_color.get_B()) 
+    AeroCheck.testUchar(*lcol)
+    AeroCheck.testUint16(ct_sec)
+    self.f.write("RAMP")
+    self.__write_colors(*lcol)
+    self.__write_ct_sec(ct_sec)
+    self.cmt(cmt)
+
 
 
   #---------------------------
@@ -227,18 +302,18 @@ class PropFile(object):
   #---------------------------
   #   DEFSUB FUNCTION 
   #---------------------------
-  def defsub(self, sub_name, fn):
+  def defsub(self, sub_name, fct):
     """For use DEFSUB function"""
     return NotIimplemented 
 
   #---------------------------
   #   LOOP FUNCTION 
   #---------------------------
-  def loop(self, nb_loop, fn):
+  def loop(self, nb_loop, fct, *args):
     """for use a realy aerotech loop"""
     AeroCheck.testLoop(nb_loop)
     self.f.write("L," + str(nb_loop) + "\n")
-    fn()
+    fct(*args)
     self.f.write("E\n")
 
   #---------------------------
@@ -253,18 +328,22 @@ class PropFile(object):
 if __name__ == '__main__' : 
   """some dev tests"""
   M = list()
-  for i in range(2) :
+  for i in range(2):
     M.append( PropFile('test{}.glo'.format(str(i))))
 
-  M[1].cmt("hello world")
-  M[1].C(256,250,0, cmt="test 1")
-  M[1].r(256, cmt="test 1")
-  M[1].g(256, cmt="test 1")
-  M[1].b(256, cmt="test 1")
-  M[1].d(-256, cmt="test 1")
-  M[0].eol()
-  M[1].eol()
-  M[1].ramp(256,0,0,100, cmt = "test 1")
+  for i in range(2):  
+      rouge = Color(255,0,0)
+      M[i].cmt("hello world")
+      M[i].cc(Color(100,100,0), cmt="test 1")
+      M[i].c(100,100,0, cmt="test 2")
+      M[i].r(256, cmt="test 1")
+      M[i].g(256, cmt="test 1")
+      M[i].b(256, cmt="test 1")
+      M[i].d(-256, cmt="test 1")
+      M[i].eol()
+      M[i].eol()
+      M[i].ramp(256,0,0,100, cmt = "test 1")
+      M[i].cramp(Color(256,0,0),100, cmt = "test 2")
 
   def myloop():
     M[1].b(1024, cmt="loop")

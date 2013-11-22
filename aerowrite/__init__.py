@@ -1,3 +1,3 @@
-from .prop import PropFile
+from .prop import PropFile, Color
 
 
