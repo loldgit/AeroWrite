@@ -6,7 +6,7 @@ this is part software of AeroPack (set of tools for the aerotech juggling probs)
 It's very useful to generate glo file.
 
 Requirement:
-============
+------------
 python3 
 aerotech prob
 multi platform but at the moment only tested with linux
@@ -16,26 +16,29 @@ if this is the case
 make sure you have python3 installed
 and use python3 instead of python 
 you can verify with :
+---
 $ python --version 
 $ python3 --version
+---
 
 install
-=======
+-------
 
 you can do :
+---
 $ git clone https://github.com/LaurentBa/AeroWrite.git
 $ cd AeroWrite
 $ sudo python setup.py install
-
+---
 and test the example below :
-
+---
 $ cd docs/exemple
 $ python exemple.py
-
+---
 
 exemple
-=======
-
+-------
+---
 #!/usr/bin/python
 
 from aerowrite import PropFile, Color
@@ -111,3 +114,4 @@ for i in range(7):
     ball[i].loop(4, myloop, i)
     
     ball[i].end()
+---
